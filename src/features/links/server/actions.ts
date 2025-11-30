@@ -4,9 +4,10 @@ import {getUserOrFail} from "@/features/auth/server/actions";
 import {db} from "@/lib/db/client";
 import {and, desc, eq, getTableColumns, ilike} from "drizzle-orm";
 import {link, linksToCollections} from "@/lib/db/schema";
-import {JSDOM} from 'jsdom';
 import {getHostFromUrl} from "@/features/links/utils/get-host";
 import {getCollectionsByIds} from "@/features/collections/server/actions";
+
+const {JSDOM} = await import('jsdom');
 
 const linkColumns = getTableColumns(link);
 

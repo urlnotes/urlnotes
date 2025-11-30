@@ -112,7 +112,7 @@ export const urlIsReachable = async (url: string) => {
 }
 
 export const getLinkMeta = async (link: string) => {
-    const {JSDOM} = await import('jsdom');
+    const {default: {JSDOM}} = await import('jsdom');
 
     const user = await getUserOrFail();
     const response = await fetch(link);

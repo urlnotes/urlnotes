@@ -7,8 +7,6 @@ import {link, linksToCollections} from "@/lib/db/schema";
 import {getHostFromUrl} from "@/features/links/utils/get-host";
 import {getCollectionsByIds} from "@/features/collections/server/actions";
 
-const {JSDOM} = await import('jsdom');
-
 const linkColumns = getTableColumns(link);
 
 export const getHosts = async ({collectionId}: { collectionId?: string } = {}) => {
@@ -114,6 +112,8 @@ export const urlIsReachable = async (url: string) => {
 }
 
 export const getLinkMeta = async (link: string) => {
+    const {JSDOM} = await import('jsdom');
+
     const user = await getUserOrFail();
     const response = await fetch(link);
 

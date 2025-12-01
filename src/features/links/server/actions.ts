@@ -111,9 +111,43 @@ export const urlIsReachable = async (url: string) => {
     }
 }
 
-export const getLinkMeta = async (link: string) => {
-    const {default: {JSDOM}} = await import('jsdom');
+const extractFirstTagMatch = (html: string, regex: RegExp) => {
+    const match = regex.exec(html);
+    return match?.[1]?.trim();
+}
 
+const parseTagAttributes = (tag: string) => {
+    const attributes: Record<string, string> = {};
+    const pattern = /([\w:-]+)\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s"'`=<>]+))/g;
+
+    let match: RegExpExecArray | null;
+    while ((match = pattern.exec(tag)) !== null) {
+        const [, name, doubleQuoted, singleQuoted, unquoted] = match;
+        attributes[name.toLowerCase()] = doubleQuoted ?? singleQuoted ?? unquoted ?? '';
+    }
+
+    return attributes;
+}
+
+const getMetaContent = (html: string, propertyName: string) => {
+    const metaRegex = /<meta\b[^>]*>/gi;
+    const target = propertyName.toLowerCase();
+
+    let match: RegExpExecArray | null;
+    while ((match = metaRegex.exec(html)) !== null) {
+        const tag = match[0];
+        const attributes = parseTagAttributes(tag);
+        const property = attributes['property'] ?? attributes['name'];
+
+        if (property && property.toLowerCase() === target) {
+            return attributes['content'] ?? attributes['value'];
+        }
+    }
+
+    return undefined;
+}
+
+export const getLinkMeta = async (link: string) => {
     const user = await getUserOrFail();
     const response = await fetch(link);
 
@@ -124,17 +158,16 @@ export const getLinkMeta = async (link: string) => {
     }
 
     const htmlText = await response.text();
-    const {window: {document}} = new JSDOM(htmlText);
 
-    let title = document.querySelector('meta[property="og:title"]')?.getAttribute('content');
+    let title = getMetaContent(htmlText, 'og:title');
 
     if (!title) {
-        title = document.querySelector('title')?.textContent;
+        title = extractFirstTagMatch(htmlText, /<title[^>]*>([\s\S]*?)<\/title>/i);
     }
 
     let image =
-        document.querySelector('meta[property="og:image"]')?.getAttribute('content')
-        ?? document.querySelector('meta[property="twitter:image"]')?.getAttribute('content');
+        getMetaContent(htmlText, 'og:image')
+        ?? getMetaContent(htmlText, 'twitter:image');
 
     if (!image && user.thumio_id) {
         await fetch(`https://image.thum.io/get/prefetch/auth/${user.thumio_id}/${link}`);

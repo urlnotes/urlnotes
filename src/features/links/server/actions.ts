@@ -112,8 +112,7 @@ export const urlIsReachable = async (url: string) => {
 }
 
 export const getLinkMeta = async (link: string) => {
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const {JSDOM} = require('jsdom');
+    const {default: {JSDOM}} = await import('jsdom');
 
     const user = await getUserOrFail();
     const response = await fetch(link);

@@ -4,12 +4,16 @@ import {link as linkModel} from "@/lib/db/schema";
 import {LinkImageCard} from "@/features/links/components/image-card";
 import {Tooltip, TooltipContent, TooltipTrigger} from "@/components/ui/tooltip";
 import {Button} from "@/components/ui/button";
-import {TrashIcon} from "lucide-react";
+import {EllipsisIcon} from "lucide-react";
 import Link from "next/link";
 import {MouseEventHandler, useState} from "react";
-import {Spinner} from "@/components/ui/spinner";
 import {deleteLink} from "@/features/links/server/actions";
-import {useQueryClient} from "@tanstack/react-query";
+import {
+    LinkSheet,
+    LinkSheetContent,
+    LinkSheetTrigger,
+    LongPressSheetTrigger
+} from "@/features/links/components/link-sheet";
 
 export function LinkCard(
     {
@@ -45,43 +49,50 @@ export function LinkCard(
     };
 
     return (
-        <div className='relative group'>
-            <Link
-                key={link.id}
-                href={link.url}
-                target='_blank'
-                className='h-full relative z-0 bg-background border p-1 rounded-xl flex flex-col gap-1 hover:border-muted-foreground transition-colors'
-            >
-                <LinkImageCard
-                    loading={false}
-                    host={link.host}
-                    title={link.title}
-                    url={link.url}
-                    imageUrl={link.imageUrl}
-                />
-                <div
-                    className='line-clamp-2 text-sm px-2 py-1 opacity-70 group-hover:opacity-100'
-                >
-                    {link.title}
-                </div>
-            </Link>
-            <Tooltip>
-                <TooltipTrigger asChild>
-                    <Button
-                        className='cursor-pointer z-1 absolute top-0 right-0 mt-2 mr-2 hidden group-hover:flex'
-                        variant='destructive'
-                        size='icon-sm'
-                        onClick={deleteAction}
-                        disabled={deleting}
-                    >
-                        {deleting && <Spinner />}
-                        {!deleting && <TrashIcon />}
-                    </Button>
-                </TooltipTrigger>
-                <TooltipContent side='bottom' className='z-1'>
-                    Delete link
-                </TooltipContent>
-            </Tooltip>
-        </div>
+        <LinkSheet>
+            <div className='relative group'>
+                <LongPressSheetTrigger>
+                    {attrs => (
+                        <Link
+                            key={link.id}
+                            href={link.url}
+                            target='_blank'
+                            className='h-full relative z-0 bg-background border p-1 rounded-xl flex flex-col gap-1 hover:border-muted-foreground transition-colors'
+                            {...attrs}
+                        >
+                            <LinkImageCard
+                                loading={false}
+                                host={link.host}
+                                title={link.title}
+                                url={link.url}
+                                imageUrl={link.imageUrl}
+                            />
+                            <div
+                                className='line-clamp-2 text-sm px-2 py-1 opacity-70 group-hover:opacity-100'
+                            >
+                                {link.title}
+                            </div>
+                        </Link>
+                    )}
+                </LongPressSheetTrigger>
+                <Tooltip>
+                    <LinkSheetTrigger>
+                        <TooltipTrigger asChild>
+                            <Button
+                                className='cursor-pointer z-1 absolute top-0 right-0 mt-2 mr-2 hidden md:group-hover:flex'
+                                variant='default'
+                                size='icon-sm'
+                            >
+                                <EllipsisIcon/>
+                            </Button>
+                        </TooltipTrigger>
+                    </LinkSheetTrigger>
+                    <TooltipContent side='bottom' className='z-1'>
+                        More
+                    </TooltipContent>
+                </Tooltip>
+            </div>
+            <LinkSheetContent link={link} />
+        </LinkSheet>
     );
 }

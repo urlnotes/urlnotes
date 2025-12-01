@@ -7,7 +7,7 @@ import {
     SidebarHeader,
     SidebarMenu,
     SidebarMenuButton,
-    SidebarMenuItem, SidebarSeparator
+    SidebarMenuItem, SidebarSeparator, useSidebar
 } from "@/components/ui/sidebar";
 import {
     ChevronDown,
@@ -29,6 +29,7 @@ import {Skeleton} from "@/components/ui/skeleton";
 
 function CollectionsLinks() {
     const {isPending, data, error} = useUserCollections();
+    const {setOpenMobile} = useSidebar();
 
     if (error) {
         return <></>
@@ -55,7 +56,7 @@ function CollectionsLinks() {
                         {!isPending && data.map((collection) => (
                             <SidebarMenuItem key={collection.id}>
                                 <SidebarMenuButton asChild>
-                                    <Link href={`/app/collections/${collection.id}`}>
+                                    <Link href={`/app/collections/${collection.id}`} onClick={() => setOpenMobile(false)}>
                                         <FolderIcon/> {collection.name}
                                     </Link>
                                 </SidebarMenuButton>
@@ -76,13 +77,15 @@ export function AppSidebar() {
         setOpen: setCreateCollectionDialogOpen,
     } = useCreateCollectionDialog();
 
+    const {setOpenMobile} = useSidebar();
+
     return (
         <Sidebar>
             <SidebarHeader>
                 <SidebarMenu>
                     <SidebarMenuItem className='flex-1'>
                         <SidebarMenuButton asChild>
-                            <Link href='/app'>
+                            <Link href='/app' onClick={() => setOpenMobile(false)}>
                                 <Logo/>
                             </Link>
                         </SidebarMenuButton>
@@ -92,25 +95,25 @@ export function AppSidebar() {
                 </SidebarMenu>
             </SidebarHeader>
 
-            <SidebarGroup>
-                <SidebarMenu>
-                    <SidebarMenuItem>
-                        <Button
-                            variant='outline'
-                            className='justify-start text-muted-foreground cursor-pointer w-full'
-                        >
-                            <SearchIcon/> Search...
-                        </Button>
-                    </SidebarMenuItem>
-                </SidebarMenu>
-            </SidebarGroup>
+            {/*<SidebarGroup>*/}
+            {/*    <SidebarMenu>*/}
+            {/*        <SidebarMenuItem>*/}
+            {/*            <Button*/}
+            {/*                variant='outline'*/}
+            {/*                className='justify-start text-muted-foreground cursor-pointer w-full'*/}
+            {/*            >*/}
+            {/*                <SearchIcon/> Search...*/}
+            {/*            </Button>*/}
+            {/*        </SidebarMenuItem>*/}
+            {/*    </SidebarMenu>*/}
+            {/*</SidebarGroup>*/}
 
             <SidebarGroup>
                 <SidebarMenu>
                     <SidebarMenuItem>
                         <div className='flex items-center gap-1'>
                             <SidebarMenuButton asChild>
-                                <Link href='/app/links'>
+                                <Link href='/app/links' onClick={() => setOpenMobile(false)}>
                                     <LinkIcon/> Links
                                 </Link>
                             </SidebarMenuButton>
@@ -119,7 +122,10 @@ export function AppSidebar() {
                                     <Button
                                         variant='ghost'
                                         size='icon-sm'
-                                        onClick={() => setLinkCreateDialogOpen(true)}
+                                        onClick={() => {
+                                            setLinkCreateDialogOpen(true);
+                                            setOpenMobile(false);
+                                        }}
                                         className='cursor-pointer'
                                     >
                                         <PlusIcon/>
@@ -134,7 +140,7 @@ export function AppSidebar() {
                     <SidebarMenuItem>
                         <div className='flex items-center gap-1'>
                             <SidebarMenuButton asChild>
-                                <Link href='/app/collections'>
+                                <Link href='/app/collections' onClick={() => setOpenMobile(false)}>
                                     <LibraryBigIcon/> Collections
                                 </Link>
                             </SidebarMenuButton>
@@ -143,7 +149,10 @@ export function AppSidebar() {
                                     <Button
                                         variant='ghost'
                                         size='icon-sm'
-                                        onClick={() => setCreateCollectionDialogOpen(true)}
+                                        onClick={() => {
+                                            setCreateCollectionDialogOpen(true);
+                                            setOpenMobile(false);
+                                        }}
                                         className='cursor-pointer'
                                     >
                                         <PlusIcon/>

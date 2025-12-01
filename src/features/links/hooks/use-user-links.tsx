@@ -13,6 +13,7 @@ export function useUserLinks(
         queryKey: ['links', filters],
         queryFn: () => getLinks(filters),
         placeholderData: prev => prev,
+        refetchOnWindowFocus: false,
     });
 }
 
@@ -20,5 +21,6 @@ export function useUserHosts(collectionId?: string) {
     return useQuery({
         queryKey: ['hosts', collectionId ?? null],
         queryFn: async () => (await getHosts({collectionId})).map(i => i.host),
+        refetchOnWindowFocus: false,
     });
 }

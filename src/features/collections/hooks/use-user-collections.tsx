@@ -6,4 +6,5 @@ import {getUserCollections} from "@/features/collections/server/actions";
 export const useUserCollections = () => useQuery({
     queryKey: ['collections'],
     queryFn: () => getUserCollections(),
+    refetchOnWindowFocus: false,
 });

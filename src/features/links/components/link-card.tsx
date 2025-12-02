@@ -14,6 +14,7 @@ import {
     LinkSheetTrigger,
     LongPressSheetTrigger
 } from "@/features/links/components/link-sheet";
+import {LinkCollectionsBadges} from "@/features/links/components/link-collections-badges";
 
 export function LinkCard(
     {
@@ -72,6 +73,7 @@ export function LinkCard(
                             >
                                 {link.title}
                             </div>
+                            <LinkCollectionsBadges withIcons={false} asLinks={false} link={link} />
                         </Link>
                     )}
                 </LongPressSheetTrigger>

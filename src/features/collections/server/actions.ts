@@ -2,9 +2,8 @@
 
 import {getUserOrFail} from "@/features/auth/server/actions";
 import {db} from "@/lib/db/client";
-import {eq, inArray} from "drizzle-orm";
-import {collection} from "@/lib/db/schema";
-import {id} from "zod/locales";
+import {and, eq, getTableColumns, inArray} from "drizzle-orm";
+import {collection, link, linksToCollections} from "@/lib/db/schema";
 
 export const getUserCollections = async () => {
     const user = await getUserOrFail();
@@ -61,3 +60,21 @@ export const getCollection = async (id: string) => {
             where: eq(collection.id, id),
         });
 }
+
+export const getLinkCollections = async (linkId: string) => {
+    const user = await getUserOrFail();
+
+    return db
+        .select({
+            ... getTableColumns(collection)
+        })
+        .from(collection)
+        .leftJoin(linksToCollections, eq(linksToCollections.collectionId, collection.id))
+        .leftJoin(link, eq(linksToCollections.linkId, link.id))
+        .where(
+            and(
+                eq(link.userId, user.id),
+                eq(linksToCollections.linkId, linkId),
+            ),
+        );
+};

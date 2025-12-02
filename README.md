@@ -46,7 +46,7 @@ Feel free to open [issues](https://github.com/urlnotes/urlnotes/issues), share s
 
 The [urlnotes.dev](https://urlnotes.dev) app is free and always will be and under MIT license. You can copy, modify, sell (please don't) how you want.
 
-## Contriblute
+## Contribute
 
 1. Fork the [repository](https://github.com/urlnotes/urlnotes)
 2. Make your changes

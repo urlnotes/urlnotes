@@ -8,6 +8,7 @@ import {LinkImageCard} from "@/features/links/components/image-card";
 import {Button} from "@/components/ui/button";
 import {ExternalLinkIcon, GlobeIcon} from "lucide-react";
 import Link from "next/link";
+import {LinkCollectionsBadges} from "@/features/links/components/link-collections-badges";
 
 type ContextValues = {
     open: boolean;
@@ -68,6 +69,8 @@ export function LinkSheetContent(
         link: typeof linkModel.$inferSelect,
     }
 ) {
+    const {setOpen} = useLinkSheet();
+
     return (
         <SheetContent>
             <SheetHeader>
@@ -89,6 +92,10 @@ export function LinkSheetContent(
                 <div className='font-semibold'>
                     {link.title}
                 </div>
+                <LinkCollectionsBadges
+                    link={link}
+                    onLinkVisit={() => setOpen(false)}
+                />
             </div>
         </SheetContent>
     );
